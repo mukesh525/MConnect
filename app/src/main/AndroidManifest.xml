@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="in.vmc.mcubeconnect">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+
+    <application
+        android:name=".activity.MyApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:launchMode="singleInstance"
+        android:noHistory="false"
+        android:screenOrientation="portrait"
+        android:supportsRtl="true"
+        android:theme="@style/MyMaterialTheme">
+        <activity
+            android:name=".activity.Welcome"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:noHistory="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".activity.Home"
+            android:screenOrientation="portrait">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+
+        </activity>
+        <activity
+            android:name=".activity.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.SignupActivity"
+            android:screenOrientation="portrait" />
+
+        <receiver android:name=".backgroundservice.IncomingSms">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".activity.ForgotPasword"
+            android:label="@string/title_activity_forgot_pasword"
+            android:theme="@style/MyMaterialTheme" />
+        <activity
+            android:name=".activity.UpdateProfile"
+            android:label="@string/title_activity_update_profile"
+            android:parentActivityName=".activity.Home"
+            android:screenOrientation="portrait"
+            android:theme="@style/MyMaterialTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.vmc.mcubeconnect.activity.Home" />
+        </activity>
+        <activity
+            android:name=".activity.DatailImgeView"
+            android:label="@string/title_activity_datail_imge_view"
+            android:theme="@style/MyMaterialTheme" />
+        <activity
+            android:name=".activity.SiteDetail"
+            android:label="@string/title_activity_site_detail"
+            android:theme="@style/MyMaterialTheme" />
+        <activity
+            android:name=".activity.LocationDetail"
+            android:label="@string/title_activity_location_detail"
+            android:parentActivityName=".activity.SiteDetail"
+            android:theme="@style/MyMaterialTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.vmc.mcubeconnect.activity.SiteDetail" />
+        </activity>
+        <activity
+            android:name=".activity.FeedBack"
+            android:label="@string/title_activity_feed_back"
+            android:parentActivityName=".activity.Home"
+            android:theme="@style/MyMaterialTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.vmc.mcubeconnect.activity.Home" />
+        </activity>
+    </application>
+
+</manifest>
