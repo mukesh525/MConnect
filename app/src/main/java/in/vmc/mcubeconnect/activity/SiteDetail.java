@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.GridLayout;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -46,7 +48,7 @@ public class SiteDetail extends AppCompatActivity implements TAG, YouTubePlayer.
     public static String siteId;
     public static String authkey;
     @InjectView(R.id.listView2)
-    ListView listView;
+    GridView listView;
     @InjectView(R.id.root)
     RelativeLayout mroot;
     @InjectView(R.id.desc)
