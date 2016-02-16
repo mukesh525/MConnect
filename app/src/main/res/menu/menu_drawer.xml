@@ -17,7 +17,7 @@
             android:title="Liked" />
         <item
             android:id="@+id/offer"
-            android:icon="@drawable/offerlogo"
+            android:icon="@drawable/icon_gift"
             android:title="Offer" />
 
         <item
@@ -27,7 +27,7 @@
 
     </group>
     <group android:id="@+id/my_id">
-        <item android:title="Settings">
+        <item android:title="Preferences">
             <menu>
                 <item
                     android:id="@+id/nav_logout"
