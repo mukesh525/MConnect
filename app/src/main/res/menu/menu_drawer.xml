@@ -18,7 +18,7 @@
         <item
             android:id="@+id/offer"
             android:icon="@drawable/icon_gift"
-            android:title="Offer" />
+            android:title="Offers" />
 
         <item
             android:id="@+id/visit"
