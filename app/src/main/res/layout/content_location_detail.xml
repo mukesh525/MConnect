@@ -96,14 +96,14 @@
                             android:layout_height="25.0dip"
                             android:layout_gravity="center"
                             android:layout_marginLeft="5dp"
-                            android:background="@drawable/like" />
+                            android:background="@drawable/ic_like" />
 
                         <ImageView
                             android:id="@+id/sensorcall"
                             android:layout_width="25.0dip"
                             android:layout_height="25.0dip"
                             android:layout_marginLeft="5dp"
-                            android:background="@drawable/cal" />
+                            android:background="@drawable/ic_call" />
 
                         <ImageView
                             android:id="@+id/sensorpeople"
@@ -111,7 +111,7 @@
                             android:layout_height="25.0dip"
                             android:layout_gravity="right"
                             android:layout_marginLeft="5dp"
-                            android:background="@drawable/share" />
+                            android:background="@drawable/ic_share" />
                     </LinearLayout>
 
 
@@ -138,14 +138,12 @@
                         android:gravity="center"
                         android:hint="Write Message to Send"
                         android:inputType="textMultiLine" />
-
                     <Button
                         android:id="@+id/send"
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="37dp"
-                        android:background="@drawable/button_background"
-                        android:text="send"
+                        android:background="@drawable/ic_send"
                         android:textColor="#FFF" />
                 </LinearLayout>
             </LinearLayout>

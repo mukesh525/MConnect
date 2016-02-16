@@ -141,7 +141,7 @@
                     android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:layout_weight="0.5"
-                    android:background="@drawable/pencilicon" />
+                    android:background="@drawable/ic_edit" />
 
 
             </LinearLayout>
@@ -190,7 +190,7 @@
                     android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:layout_weight="0.5"
-                    android:background="@drawable/pencilicon" />
+                    android:background="@drawable/ic_edit" />
 
 
             </LinearLayout>
@@ -230,7 +230,7 @@
                     android:layout_width="10.0dip"
                     android:layout_height="25.0dip"
                     android:layout_weight="0.5"
-                    android:background="@drawable/calendericon" />
+                    android:background="@drawable/ic_cal" />
 
 
             </LinearLayout>
