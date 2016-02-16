@@ -16,10 +16,15 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,7 +42,7 @@ import in.vmc.mcubeconnect.utils.JSONParser;
 import in.vmc.mcubeconnect.utils.TAG;
 import in.vmc.mcubeconnect.utils.Utils;
 
-public class SiteDetail extends AppCompatActivity implements TAG {
+public class SiteDetail extends AppCompatActivity implements TAG, YouTubePlayer.OnInitializedListener {
     public static String siteId;
     public static String authkey;
     @InjectView(R.id.listView2)
@@ -50,6 +55,60 @@ public class SiteDetail extends AppCompatActivity implements TAG {
     private Toolbar toolbar;
     private ProgressDialog pd;
     private Sitedetailadapter adapter;
+    private YouTubePlayer.PlaybackEventListener playbackEventListener = new YouTubePlayer.PlaybackEventListener() {
+
+        @Override
+        public void onBuffering(boolean arg0) {
+        }
+
+        @Override
+        public void onPaused() {
+        }
+
+        @Override
+        public void onPlaying() {
+        }
+
+        @Override
+        public void onSeekTo(int arg0) {
+        }
+
+        @Override
+        public void onStopped() {
+        }
+
+    };
+    private YouTubePlayer.PlayerStateChangeListener playerStateChangeListener = new YouTubePlayer.PlayerStateChangeListener() {
+
+        @Override
+        public void onAdStarted() {
+        }
+
+        @Override
+        public void onError(YouTubePlayer.ErrorReason arg0) {
+        }
+
+        @Override
+        public void onLoaded(String arg0) {
+        }
+
+        @Override
+        public void onLoading() {
+        }
+
+        @Override
+        public void onVideoEnded() {
+        }
+
+        @Override
+        public void onVideoStarted() {
+        }
+    };
+    private LinearLayout playerView;
+    private YouTubePlayerSupportFragment youTubePlayerFragment;
+    private YouTubePlayer videoPlayer;
+    private String VIDEO_ID;
+    private boolean fullScreen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +118,10 @@ public class SiteDetail extends AppCompatActivity implements TAG {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        playerView = (LinearLayout) findViewById(R.id.playerlayout);
+        youTubePlayerFragment = (YouTubePlayerSupportFragment) getSupportFragmentManager().
+                findFragmentById(R.id.youtube_fragment);
+
 //        siteId=getIntent().getExtras().getString("ID");
 //        authkey=getIntent().getExtras().getString("authkey");
         GetSites();
@@ -71,7 +134,9 @@ public class SiteDetail extends AppCompatActivity implements TAG {
                 startActivity(intent);
             }
         });
-
+        if (playerView.getVisibility() == View.VISIBLE) {
+            playerView.setVisibility(View.GONE);
+        }
 
     }
 
@@ -110,6 +175,33 @@ public class SiteDetail extends AppCompatActivity implements TAG {
 
     }
 
+    @Override
+    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean b) {
+        player.setFullscreenControlFlags(0);
+        player.setPlayerStateChangeListener(playerStateChangeListener);
+        player.setPlaybackEventListener(playbackEventListener);
+
+        /** Start buffering **/
+        videoPlayer = player;
+        videoPlayer.setOnFullscreenListener(new YouTubePlayer.OnFullscreenListener() {
+
+            @Override
+            public void onFullscreen(boolean _isFullScreen) {
+                fullScreen = _isFullScreen;
+            }
+        });
+        if (!b) {
+            player.cueVideo(VIDEO_ID);
+        }
+    }
+
+    @Override
+    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+        Toast.makeText(SiteDetail.this, "Failured to Initialize!", Toast.LENGTH_LONG).show();
+    }
+
+
+
     class Getsites extends AsyncTask<Void, Void, ArrayList<SiteData>> {
         String message = "n";
         String code = "n";
@@ -118,6 +210,7 @@ public class SiteDetail extends AppCompatActivity implements TAG {
         JSONArray data = null;
         ArrayList<SiteData> siteDatas;
         private String desc;
+        private String media;
 
         @Override
         protected void onPreExecute() {
@@ -148,6 +241,10 @@ public class SiteDetail extends AppCompatActivity implements TAG {
 
                 if (response.has(SITEDESC)) {
                     desc = response.getString(SITEDESC);
+
+                }
+                if (response.has(SITEMEDIA)) {
+                    media = response.getString(SITEMEDIA);
 
                 }
                 if (response.has(DATA)) {
@@ -184,6 +281,21 @@ public class SiteDetail extends AppCompatActivity implements TAG {
                 Log.d("SITE", SiteData.toString());
                 listView.setAdapter(new Sitedetailadapter(SiteDetail.this, SiteData));
                 tvdesc.setText(desc);
+
+                if (media.length() > 3) {
+                    VIDEO_ID = Utils.extractYTId(media);
+                    youTubePlayerFragment.initialize(API_KEY, SiteDetail.this);
+                    if (playerView.getVisibility() == View.GONE) {
+                        playerView.setVisibility(View.VISIBLE);
+                    }
+
+                } else {
+                    if (playerView.getVisibility() == View.VISIBLE) {
+                        playerView.setVisibility(View.GONE);
+                    }
+
+
+                }
 
 
             }

@@ -10,6 +10,15 @@
     tools:context="in.vmc.mcubeconnect.activity.SiteDetail"
     tools:showIn="@layout/activity_site_detail">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
     <android.support.v7.widget.CardView
 
         android:id="@+id/card_view"
@@ -25,18 +34,38 @@
             android:id="@+id/desc"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="20dp"
+            android:padding="15dp"
             android:text="" />
 
 
     </android.support.v7.widget.CardView>
 
+            <LinearLayout
+                android:id="@+id/playerlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/listView2"
+                android:layout_alignStart="@+id/card_view"
+                android:layout_below="@+id/card_view"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="vertical">
+
+                <fragment
+                    android:id="@+id/youtube_fragment"
+                    android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
     <ListView
         android:id="@+id/listView2"
         android:layout_width="260.0dip"
         android:layout_height="360.0dip"
-        android:layout_below="@+id/card_view"
         android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
         android:divider="@android:color/transparent"
         android:dividerHeight="10.0sp" />
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>
