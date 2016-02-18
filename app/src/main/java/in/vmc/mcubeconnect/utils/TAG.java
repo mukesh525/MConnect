@@ -52,10 +52,8 @@ public interface TAG {
     String GENERATE_OTP_URL = "http://mconnect.vmctechnologies.com/mobapp/mconnect_otp";
     String VISTLIST = "http://mconnect.vmctechnologies.com/mobapp/visitlist";
     String FORGOT_OTP_URL = "http://mconnect.vmctechnologies.com/mobapp/forgot_pws";
-    String CHANGEPASS_URL = "http://mconnect.vmctechnologies.com/mobapp/changepwd";
     String LOGIN_URL = "http://mconnect.vmctechnologies.com/mobapp/login ";
     String REGISTER_URL = "http://mconnect.vmctechnologies.com/mobapp/register";
-    String FORGOT_OTP = "http://mconnect.vmctechnologies.com/mobapp/forgot_pws";
     String CHANGED_PASS = "http://mconnect.vmctechnologies.com/mobapp/changepwd";
     String CHECK_VISIT = "http://mconnect.vmctechnologies.com/mobapp/checkvisit";
     String VISIT_OFFLINE = "http://mconnect.vmctechnologies.com/mobapp/locdetail_offline";
