@@ -224,9 +224,9 @@ public class LocationDetail extends AppCompatActivity implements TAG, YouTubePla
                 }
             }
             if (model.isLike()) {
-                sensorLike.setBackgroundResource(R.drawable.liked);
+                sensorLike.setBackgroundResource(R.drawable.ic_liked);
             } else {
-                sensorLike.setBackgroundResource(R.drawable.like);
+                sensorLike.setBackgroundResource(R.drawable.ic_like);
             }
 
 
@@ -654,12 +654,12 @@ public class LocationDetail extends AppCompatActivity implements TAG, YouTubePla
 
                 if (code.equals("400")) {
                     Log.d("Check ", "Like Clicked " + data);
-                    imageView.setBackgroundResource(R.drawable.liked);
+                    imageView.setBackgroundResource(R.drawable.ic_liked);
                     YoYo.with(Techniques.Flash).duration(1000).playOn(imageView);
                 }
                 if (code.equals("200")) {
                     Log.d("Check ", "Like Clicked " + data);
-                    imageView.setBackgroundResource(R.drawable.like);
+                    imageView.setBackgroundResource(R.drawable.ic_like);
                     YoYo.with(Techniques.Flash).duration(1000).playOn(imageView);
                 }
             }
