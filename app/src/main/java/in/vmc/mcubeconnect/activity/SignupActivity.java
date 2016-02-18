@@ -368,9 +368,9 @@ public class SignupActivity extends AppCompatActivity implements OTPDialogFragme
 
         @Override
         protected void onPostExecute(JSONObject data) {
-
-            Log.d("TEST", data.toString());
-
+            if (data != null) {
+                Log.d("TEST", data.toString());
+            }
             if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
             }
