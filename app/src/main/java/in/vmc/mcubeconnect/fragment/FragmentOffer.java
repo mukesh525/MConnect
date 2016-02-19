@@ -241,6 +241,7 @@ public class FragmentOffer extends Fragment implements TAG, SwipeRefreshLayout.O
                         }
                         if (currentvisit.has(SITEICON)) {
                             visitData.setSiteicon(currentvisit.getString(SITEICON));
+                            visitData.setBitmapLogp(JSONParser.getBitmapFromURL(visitData.getSiteicon()));
                         }
                         if (currentvisit.has(BID)) {
                             visitData.setBid(currentvisit.getString(BID));
@@ -339,6 +340,7 @@ public class FragmentOffer extends Fragment implements TAG, SwipeRefreshLayout.O
                         }
                         if (currentvisit.has(SITEICON)) {
                             visitData.setSiteicon(currentvisit.getString(SITEICON));
+                            visitData.setBitmapLogp(JSONParser.getBitmapFromURL(visitData.getSiteicon()));
                         }
                         if (currentvisit.has(NUMBER)) {
                             visitData.setNumber(currentvisit.getString(NUMBER));

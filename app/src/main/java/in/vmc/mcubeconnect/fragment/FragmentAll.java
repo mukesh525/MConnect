@@ -3,7 +3,6 @@ package in.vmc.mcubeconnect.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -280,6 +279,7 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
                         }
                         if (currentvisit.has(SITEICON)) {
                             visitData.setSiteicon(currentvisit.getString(SITEICON));
+                            visitData.setBitmapLogp(JSONParser.getBitmapFromURL(visitData.getSiteicon()));
                         }
                         if (currentvisit.has(NUMBER)) {
                             visitData.setNumber(currentvisit.getString(NUMBER));
@@ -380,6 +380,8 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
                         }
                         if (currentvisit.has(SITEICON)) {
                             visitData.setSiteicon(currentvisit.getString(SITEICON));
+                            visitData.setBitmapLogp(JSONParser.getBitmapFromURL(visitData.getSiteicon()));
+
                         }
                         if (currentvisit.has(NUMBER)) {
                             visitData.setNumber(currentvisit.getString(NUMBER));
@@ -423,6 +425,7 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
                 Snackbar.make(mroot, "No more records availabe", Snackbar.LENGTH_SHORT).show();
 
             } else if (data != null && data.size() > 0) {
+
                 VisitData = data;
                 adapter = new VisitAdapter(getActivity(), VisitData, mroot, FragmentAll.this);
                 recyclerView.setAdapter(adapter);

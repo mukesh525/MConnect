@@ -14,9 +14,7 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,12 +22,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
@@ -43,7 +39,6 @@ import in.vmc.mcubeconnect.fragment.FragmentAll;
 import in.vmc.mcubeconnect.fragment.FragmentLike;
 import in.vmc.mcubeconnect.fragment.FragmentOffer;
 import in.vmc.mcubeconnect.fragment.FragmentVisit;
-import in.vmc.mcubeconnect.model.Model;
 import in.vmc.mcubeconnect.model.VisitData;
 import in.vmc.mcubeconnect.utils.JSONParser;
 import in.vmc.mcubeconnect.utils.TAG;
@@ -191,7 +186,13 @@ public class VisitAdapter extends RecyclerView.Adapter<VisitAdapter.FollowViewHo
         } else {
             holder.businessDeatil.setText(visitDatas.get(position).getSitedesc());
         }
-        new GetImageFromUrl(visitDatas.get(position).getSiteicon(), holder.Logo, true).execute();
+
+
+        if (visitDatas.get(position).getBitmapLogp() != null) {
+            holder.Logo.setImageBitmap(Bitmap.createScaledBitmap(visitDatas.get(position).getBitmapLogp(), 150, 150, false));
+        } else {
+            new GetImageFromUrl(visitDatas.get(position).getSiteicon(), holder.Logo, true).execute();
+        }
 
 
     }

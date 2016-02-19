@@ -1,5 +1,6 @@
 package in.vmc.mcubeconnect.model;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Created by mukesh on 8/1/16.
  */
-public class VisitData implements Parcelable {
+public class VisitData {
 
     private String sitename;
     private String siteid;
@@ -18,9 +19,18 @@ public class VisitData implements Parcelable {
     private String offer;
     private String bid;
     private boolean delete;
+    private Bitmap BitmapLogp;
     private ArrayList<OptionsData> optionsData = new ArrayList<OptionsData>();
     private String offer_desc;
     private boolean Like;
+
+    public Bitmap getBitmapLogp() {
+        return BitmapLogp;
+    }
+
+    public void setBitmapLogp(Bitmap bitmapLogp) {
+        BitmapLogp = bitmapLogp;
+    }
 
     public ArrayList<OptionsData> getOptionsData() {
         return optionsData;
@@ -110,23 +120,5 @@ public class VisitData implements Parcelable {
         this.number = number;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel out, int flags) {
-
-        out.writeString(sitedesc);
-        out.writeString(number);
-        out.writeString(offer);
-        out.writeString(bid);
-        out.writeList(optionsData);
-        out.writeString(offer_desc);
-        out.writeByte((byte) (Like ? 1 : 0));
-        out.writeString(sitename);
-        out.writeString(siteid);
-        out.writeString(siteicon);
-    }
 }
