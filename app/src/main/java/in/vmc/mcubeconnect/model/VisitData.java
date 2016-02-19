@@ -1,8 +1,6 @@
 package in.vmc.mcubeconnect.model;
 
 import android.graphics.Bitmap;
-import android.os.Parcel;
-import android.os.Parcelable;
 
 import java.util.ArrayList;
 
@@ -25,11 +23,12 @@ public class VisitData {
     private boolean Like;
 
     public Bitmap getBitmapLogp() {
+
         return BitmapLogp;
     }
 
     public void setBitmapLogp(Bitmap bitmapLogp) {
-        BitmapLogp = bitmapLogp;
+        BitmapLogp = Bitmap.createScaledBitmap(bitmapLogp, 150, 150, false);
     }
 
     public ArrayList<OptionsData> getOptionsData() {

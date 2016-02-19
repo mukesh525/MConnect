@@ -189,7 +189,7 @@ public class VisitAdapter extends RecyclerView.Adapter<VisitAdapter.FollowViewHo
 
 
         if (visitDatas.get(position).getBitmapLogp() != null) {
-            holder.Logo.setImageBitmap(Bitmap.createScaledBitmap(visitDatas.get(position).getBitmapLogp(), 150, 150, false));
+            holder.Logo.setImageBitmap(visitDatas.get(position).getBitmapLogp());
         } else {
             new GetImageFromUrl(visitDatas.get(position).getSiteicon(), holder.Logo, true).execute();
         }
