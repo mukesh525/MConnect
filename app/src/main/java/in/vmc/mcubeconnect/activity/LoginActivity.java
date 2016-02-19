@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -72,8 +73,11 @@ public class LoginActivity extends AppCompatActivity implements in.vmc.mcubeconn
 
         if (widthDp >= 600) {
             setContentView(R.layout.logintab);
+
+
         } else {
             setContentView(R.layout.activity_login);
+
         }
 
         ButterKnife.inject(this);
@@ -275,6 +279,7 @@ public class LoginActivity extends AppCompatActivity implements in.vmc.mcubeconn
 
         @Override
         protected void onPreExecute() {
+
             progressDialog = new ProgressDialog(LoginActivity.this,
                     R.style.AppTheme_Dark_Dialog);
             progressDialog.setIndeterminate(true);
@@ -314,6 +319,7 @@ public class LoginActivity extends AppCompatActivity implements in.vmc.mcubeconn
 
         @Override
         protected void onPostExecute(JSONObject data) {
+
             if (data != null) {
                 Log.d("LOG", data.toString());
             }

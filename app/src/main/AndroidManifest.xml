@@ -82,11 +82,13 @@
         <activity
             android:name=".activity.SiteDetail"
             android:label="@string/title_activity_site_detail"
+            android:screenOrientation="portrait"
             android:theme="@style/MyMaterialTheme" />
         <activity
             android:name=".activity.LocationDetail"
             android:label="@string/title_activity_location_detail"
             android:parentActivityName=".activity.SiteDetail"
+            android:screenOrientation="portrait"
             android:theme="@style/MyMaterialTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -96,6 +98,7 @@
             android:name=".activity.FeedBack"
             android:label="@string/title_activity_feed_back"
             android:parentActivityName=".activity.Home"
+            android:screenOrientation="portrait"
             android:theme="@style/MyMaterialTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

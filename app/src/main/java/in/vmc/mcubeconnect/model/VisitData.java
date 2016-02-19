@@ -1,11 +1,14 @@
 package in.vmc.mcubeconnect.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 /**
  * Created by mukesh on 8/1/16.
  */
-public class VisitData {
+public class VisitData implements Parcelable {
 
     private String sitename;
     private String siteid;
@@ -105,5 +108,25 @@ public class VisitData {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+
+        out.writeString(sitedesc);
+        out.writeString(number);
+        out.writeString(offer);
+        out.writeString(bid);
+        out.writeList(optionsData);
+        out.writeString(offer_desc);
+        out.writeByte((byte) (Like ? 1 : 0));
+        out.writeString(sitename);
+        out.writeString(siteid);
+        out.writeString(siteicon);
     }
 }

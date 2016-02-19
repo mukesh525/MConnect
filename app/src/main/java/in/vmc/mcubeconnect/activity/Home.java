@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -56,7 +57,6 @@ import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.Identifier;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -72,14 +72,14 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
-import in.vmc.mcubeconnect.adapter.VisitAdapter;
-import in.vmc.mcubeconnect.model.Model;
 import in.vmc.mcubeconnect.R;
+import in.vmc.mcubeconnect.adapter.VisitAdapter;
 import in.vmc.mcubeconnect.callbacks.Popupcallback;
 import in.vmc.mcubeconnect.fragment.FragmentAll;
 import in.vmc.mcubeconnect.fragment.FragmentLike;
 import in.vmc.mcubeconnect.fragment.FragmentOffer;
 import in.vmc.mcubeconnect.fragment.FragmentVisit;
+import in.vmc.mcubeconnect.model.Model;
 import in.vmc.mcubeconnect.model.OptionsData;
 import in.vmc.mcubeconnect.model.VisitData;
 import in.vmc.mcubeconnect.utils.FirstVisitDailog;
@@ -223,6 +223,7 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
         scaleFactor = metrics.density;
         widthDp = widthPixels / scaleFactor;
         heightDp = heightPixels / scaleFactor;
+
 
         mDrawer = (NavigationView) findViewById(R.id.main_drawer);
         mDrawer.setItemIconTintList(null);
@@ -762,21 +763,23 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
             @Override
             public void onFullscreen(boolean _isFullScreen) {
                 fullScreen = _isFullScreen;
+
             }
         });
         if (!b) {
             player.cueVideo(VIDEO_ID);
+
         }
     }
 
     @Override
     public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
         Toast.makeText(this, "Failured to Initialize!", Toast.LENGTH_LONG).show();
+
     }
 
     @Override
     public void onBackPressed() {
-
 
         if (isPopopVisible()) {
             if (fullScreen) {
@@ -1012,6 +1015,7 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
         @Override
         protected void onPreExecute() {
             processing = true;
+
             super.onPreExecute();
         }
 
@@ -1128,6 +1132,7 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
         @Override
         protected void onPostExecute(Model data) {
             processing = false;
+
             if (data != null) {
                 Log.d("LOG", data.toString());
 
@@ -1294,6 +1299,7 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
         }
 
 
@@ -1363,6 +1369,7 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         }
 
 
@@ -1425,6 +1432,7 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
         }
 
 

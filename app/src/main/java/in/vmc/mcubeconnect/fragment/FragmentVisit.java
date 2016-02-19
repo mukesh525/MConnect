@@ -3,6 +3,7 @@ package in.vmc.mcubeconnect.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -156,6 +157,7 @@ public class FragmentVisit extends Fragment implements TAG, SwipeRefreshLayout.O
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
         }
 
 

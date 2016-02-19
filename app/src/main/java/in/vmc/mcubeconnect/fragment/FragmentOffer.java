@@ -4,6 +4,7 @@ package in.vmc.mcubeconnect.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -298,6 +299,7 @@ public class FragmentOffer extends Fragment implements TAG, SwipeRefreshLayout.O
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
             loading = true;
             if (pdloadmore.getVisibility() == View.GONE) {
                 pdloadmore.setVisibility(View.VISIBLE);
@@ -372,6 +374,7 @@ public class FragmentOffer extends Fragment implements TAG, SwipeRefreshLayout.O
 
         @Override
         protected void onPostExecute(ArrayList<VisitData> data) {
+
             if (pdloadmore.getVisibility() == View.VISIBLE) {
                 pdloadmore.setVisibility(View.GONE);
             }

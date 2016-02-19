@@ -8,6 +8,11 @@ public class OptionsData {
     private boolean IsChecked;
 
 
+    public OptionsData() {
+
+    }
+
+
     public String getOptionId() {
         return OptionId;
     }
@@ -31,5 +36,7 @@ public class OptionsData {
     public void setChecked(boolean isChecked) {
         IsChecked = isChecked;
     }
+
+
 }
 

@@ -3,6 +3,7 @@ package in.vmc.mcubeconnect.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -20,7 +21,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,7 +43,7 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    ArrayList<in.vmc.mcubeconnect.model.VisitData> VisitData = new ArrayList<>();
+    public static ArrayList<in.vmc.mcubeconnect.model.VisitData> VisitData = new ArrayList<>();
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -78,6 +78,7 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -124,7 +125,20 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
 
             }
         });
-        GetVisits();
+
+        if (savedInstanceState == null || !savedInstanceState.containsKey("key")) {
+            GetVisits();
+        } else {
+//            String Json = savedInstanceState.getString("key");
+//            Log.d("serialise", Json);
+//            VisitData = new Gson().fromJson(Json, new TypeToken<ArrayList<VisitData>>() {
+//            }.getType());
+            if (VisitData != null) {
+                adapter = new VisitAdapter(getActivity(), VisitData, mroot, FragmentAll.this);
+            }
+        }
+
+
         return view;
     }
 
@@ -208,6 +222,14 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
 
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString("key", "test");
+
+    }
+
     class GetVistHistory extends AsyncTask<Void, Void, ArrayList<VisitData>> {
         String message = "n";
         String code = "n";
@@ -220,6 +242,7 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
         protected void onPreExecute() {
             super.onPreExecute();
             loading = true;
+
         }
 
 
@@ -318,6 +341,7 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
         protected void onPreExecute() {
             super.onPreExecute();
             loading = true;
+
             if (pdloadmore.getVisibility() == View.GONE) {
                 pdloadmore.setVisibility(View.VISIBLE);
             }
@@ -391,6 +415,7 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
             if (pdloadmore.getVisibility() == View.VISIBLE) {
                 pdloadmore.setVisibility(View.GONE);
             }
+
             loading = false;
 
 
@@ -408,4 +433,6 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
 
 
     }
+
+
 }
