@@ -1,13 +1,15 @@
 package in.vmc.mcubeconnect.model;
 
 import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 
 /**
  * Created by mukesh on 8/1/16.
  */
-public class VisitData {
+public class VisitData implements Parcelable {
 
     private String sitename;
     private String siteid;
@@ -21,6 +23,59 @@ public class VisitData {
     private ArrayList<OptionsData> optionsData = new ArrayList<OptionsData>();
     private String offer_desc;
     private boolean Like;
+
+
+    public VisitData() {
+
+    }
+
+    protected VisitData(Parcel in) {
+        sitename = in.readString();
+        siteid = in.readString();
+        siteicon = in.readString();
+        sitedesc = in.readString();
+        number = in.readString();
+        offer = in.readString();
+        bid = in.readString();
+        delete = in.readByte() != 0;
+        BitmapLogp = in.readParcelable(Bitmap.class.getClassLoader());
+        optionsData = in.createTypedArrayList(OptionsData.CREATOR);
+        offer_desc = in.readString();
+        Like = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(sitename);
+        dest.writeString(siteid);
+        dest.writeString(siteicon);
+        dest.writeString(sitedesc);
+        dest.writeString(number);
+        dest.writeString(offer);
+        dest.writeString(bid);
+        dest.writeByte((byte) (delete ? 1 : 0));
+        dest.writeParcelable(BitmapLogp, flags);
+        dest.writeTypedList(optionsData);
+        dest.writeString(offer_desc);
+        dest.writeByte((byte) (Like ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<VisitData> CREATOR = new Creator<VisitData>() {
+        @Override
+        public VisitData createFromParcel(Parcel in) {
+            return new VisitData(in);
+        }
+
+        @Override
+        public VisitData[] newArray(int size) {
+            return new VisitData[size];
+        }
+    };
 
     public Bitmap getBitmapLogp() {
 

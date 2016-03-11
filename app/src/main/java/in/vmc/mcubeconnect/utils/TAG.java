@@ -4,6 +4,7 @@ package in.vmc.mcubeconnect.utils;
  * Created by mukesh on 3/12/15.
  */
 public interface TAG {
+
     String PHONE = "number";
     String AUTHKEY = "authkey";
     String BEACONID = "beaconid";

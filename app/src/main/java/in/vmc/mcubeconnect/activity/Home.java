@@ -120,7 +120,6 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private ImageView sensorCall, sensorLike, sensorPeople;
-    ;
     private Fragment fragmnetAll;
     private ReferDialogFragment referDialogFragment;
     private FirstVisitDailog firstVisitDailog = new FirstVisitDailog();
@@ -207,7 +206,6 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
         return BitmapFactory
                 .decodeByteArray(decodedByte, 0, decodedByte.length);
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -223,6 +221,12 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
         scaleFactor = metrics.density;
         widthDp = widthPixels / scaleFactor;
         heightDp = heightPixels / scaleFactor;
+        if (widthDp >= 600) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        }
 
 
         mDrawer = (NavigationView) findViewById(R.id.main_drawer);
@@ -484,7 +488,7 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
                             CheckVisit(mbeacons.get(0));
                         } else {
 
-                            if (!mvisitedBeacon.contains(mbeacons.get(0).getId2()) && !firstVisitDailog.isVisible()) {
+                            if (!mvisitedBeacon.contains(mbeacons.get(0).getId2()) && !firstVisitDailog.isVisible() && isPopopVisible()) {
                                 Snackbar snack = Snackbar.make(mroot, "New Location Detected", Snackbar.LENGTH_LONG)
                                         .setAction("Show", new View.OnClickListener() {
                                             @Override
@@ -830,7 +834,7 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
         }
     }
 
-    public void CheckVisit(final Beacon BeaconId) {
+    public synchronized void CheckVisit(final Beacon BeaconId) {
 
         if (!processing) {
             if (Utils.onlineStatus2(Home.this)) {
@@ -844,7 +848,7 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
 
                             }
                         })
-                        .setActionTextColor(ContextCompat.getColor(Home.this, R.color.primary));
+                        .setActionTextColor(ContextCompat.getColor(Home.this, R.color.accent));
                 View view = snack.getView();
                 TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
                 tv.setTextColor(Color.WHITE);
@@ -865,7 +869,7 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
 
     @Override
     public void onItemClick(int position) {
-        //unknown
+        // imageview click handls show image method
     }
 
     public void showImages(ArrayList<String> images) {
@@ -924,7 +928,7 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
         }
     }
 
-    public void GetLikeUnlike(final ImageView imageView, final String siteid, final String bid) {
+    public synchronized void GetLikeUnlike(final ImageView imageView, final String siteid, final String bid) {
 
         if (Utils.onlineStatus2(Home.this)) {
             new SetLikeUnlike(imageView, siteid, bid).execute();
@@ -1026,7 +1030,8 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
 
             try {
                 response = JSONParser.CheckVisitJASON(CHECK_VISIT, authkey, BeaconId.getId2().toString());
-                Log.d("RESPONSE", response.toString());
+             //   Log.d("RESPONSE", response.toString());
+                Log.d("RESPONSE", "Beacon :"+BeaconId.getId2().toString()+" "+response.toString());
                 model = new Model();
 
                 if (response.has(CODE)) {
@@ -1134,7 +1139,7 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
             processing = false;
 
             if (data != null) {
-                Log.d("LOG", data.toString());
+                Log.d("LOG", "Beacon :"+BeaconId+" "+data.toString());
 
 
                 if (code.equals("202")) {
@@ -1146,7 +1151,6 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
                             mvisitedBeacon.remove(BeaconId.getId2());
                         } catch (Exception e) {
                         }
-                        ;
                     }
 
                 } else if (code.equals("200") || code.equals("201")) {

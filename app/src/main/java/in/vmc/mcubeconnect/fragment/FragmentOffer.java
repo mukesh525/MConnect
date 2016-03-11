@@ -3,8 +3,6 @@ package in.vmc.mcubeconnect.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,7 +28,6 @@ import java.util.ArrayList;
 
 import in.vmc.mcubeconnect.R;
 import in.vmc.mcubeconnect.activity.Home;
-import in.vmc.mcubeconnect.activity.SiteDetail;
 import in.vmc.mcubeconnect.adapter.VisitAdapter;
 import in.vmc.mcubeconnect.callbacks.Popupcallback;
 import in.vmc.mcubeconnect.model.VisitData;
@@ -44,7 +41,7 @@ public class FragmentOffer extends Fragment implements TAG, SwipeRefreshLayout.O
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    ArrayList<in.vmc.mcubeconnect.model.VisitData> VisitData = new ArrayList<>();
+    private ArrayList<VisitData> VisitData = new ArrayList<>();
     private int MIN = 0, MAX = 10;
     private Popupcallback popupcallback;
     private VisitAdapter adapter;
@@ -54,6 +51,7 @@ public class FragmentOffer extends Fragment implements TAG, SwipeRefreshLayout.O
     private RelativeLayout mroot;
     private boolean loading;
     private LinearLayout pdloadmore;
+    private String STATE_VISITOFFERDATA = "STATE_VISITOFFERDATA";
 
     public FragmentOffer() {
         // Required empty public constructor
@@ -67,6 +65,15 @@ public class FragmentOffer extends Fragment implements TAG, SwipeRefreshLayout.O
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //save the movie list to a parcelable prior to rotation or configuration change
+        outState.putParcelableArrayList(STATE_VISITOFFERDATA, VisitData);
+
+
     }
 
     @Override
@@ -86,6 +93,10 @@ public class FragmentOffer extends Fragment implements TAG, SwipeRefreshLayout.O
         mroot = (RelativeLayout) view.findViewById(R.id.root);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setColorSchemeResources(
+                R.color.refresh_progress_1,
+                R.color.refresh_progress_2,
+                R.color.refresh_progress_3);
         pdloadmore = (LinearLayout) view.findViewById(R.id.loadmorepd1);
         adapter = new VisitAdapter(getActivity(), VisitData, mroot, FragmentOffer.this);
         recyclerView.setAdapter(adapter);
@@ -109,14 +120,30 @@ public class FragmentOffer extends Fragment implements TAG, SwipeRefreshLayout.O
 
             }
         });
-        GetVisits();
+
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null) {
+           VisitData = savedInstanceState.getParcelableArrayList(STATE_VISITOFFERDATA);
+            if (VisitData != null) {
+                adapter.setData(VisitData);
+                Log.d("RESPONSE", "Offer LODED SCREEN ORIENTATION");
+            }
+
+        } else {
+            GetVisits();
+        }
     }
 
     @Override
     public void onRefresh() {
 
-        swipeRefreshLayout.setRefreshing(false);
+        // swipeRefreshLayout.setRefreshing(false);
         GetVisits();
 
     }
@@ -142,20 +169,26 @@ public class FragmentOffer extends Fragment implements TAG, SwipeRefreshLayout.O
             MIN = 0;
             new GetVistHistory().execute();
         } else {
-            Snackbar snack = Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT)
-                    .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            GetVisits();
+            if (getActivity() != null) {
+                if (swipeRefreshLayout.isRefreshing()) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+                Snackbar snack = Snackbar.make(getView(), "No Internet Connection", Snackbar.LENGTH_SHORT)
+                        .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                GetVisits();
 
-                        }
-                    })
-                    .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.primary));
-            View view = snack.getView();
-            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-            tv.setTextColor(Color.WHITE);
-            snack.show();
+                            }
+                        })
+                        .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.accent));
+                View view = snack.getView();
+                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                tv.setTextColor(Color.WHITE);
+                snack.show();
+            }
         }
+
 
     }
 
@@ -165,19 +198,24 @@ public class FragmentOffer extends Fragment implements TAG, SwipeRefreshLayout.O
             MIN = MIN + 10;
             new GetMoreData().execute();
         } else {
-            Snackbar snack = Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT)
-                    .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            GetMoreData();
+            if (getActivity() != null) {
+                if (swipeRefreshLayout.isRefreshing()) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+                Snackbar snack = Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT)
+                        .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                GetMoreData();
 
-                        }
-                    })
-                    .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.accent));
-            View view = snack.getView();
-            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-            tv.setTextColor(Color.WHITE);
-            snack.show();
+                            }
+                        })
+                        .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.accent));
+                View view = snack.getView();
+                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                tv.setTextColor(Color.WHITE);
+                snack.show();
+            }
         }
 
     }
@@ -277,7 +315,9 @@ public class FragmentOffer extends Fragment implements TAG, SwipeRefreshLayout.O
 
         @Override
         protected void onPostExecute(ArrayList<VisitData> data) {
-
+            if (swipeRefreshLayout.isRefreshing()) {
+                swipeRefreshLayout.setRefreshing(false);
+            }
             if (data != null) {
                 VisitData = data;
                 adapter = new VisitAdapter(getActivity(), VisitData, mroot, FragmentOffer.this);
@@ -383,13 +423,14 @@ public class FragmentOffer extends Fragment implements TAG, SwipeRefreshLayout.O
             loading = false;
 
 
-            if (code.equals("202") && Home.currentPosition == 2) {
+            if (code.equals("202") && Home.currentPosition == 2 && getActivity() != null) {
                 Snackbar.make(mroot, "No more records availabe", Snackbar.LENGTH_SHORT).show();
 
             } else if (data != null && data.size() > 0) {
                 VisitData = data;
-                adapter = new VisitAdapter(getActivity(), VisitData, mroot, FragmentOffer.this);
-                recyclerView.setAdapter(adapter);
+                adapter.setData(data);
+//                adapter = new VisitAdapter(getActivity(), VisitData, mroot, FragmentOffer.this);
+//                recyclerView.setAdapter(adapter);
             }
 
 

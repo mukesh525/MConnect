@@ -65,7 +65,10 @@ public class VisitAdapter extends RecyclerView.Adapter<VisitAdapter.FollowViewHo
         this.fragment = fragment;
         this.viewClickedListner = (Home) context;
     }
-
+    public void setData(ArrayList<VisitData> visitDatas) {
+        this.visitDatas = visitDatas;
+        notifyDataSetChanged();
+    }
     public static void getImagesList(final String siteId, final Context context, final RelativeLayout mroot) {
 
 
@@ -203,7 +206,7 @@ public class VisitAdapter extends RecyclerView.Adapter<VisitAdapter.FollowViewHo
     }
 
     public interface ViewClickedListner {
-        public void OnItemClick(int position, View v, VisitData visitData);
+        void OnItemClick(int position, View v, VisitData visitData);
     }
 
     public static class FollowViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

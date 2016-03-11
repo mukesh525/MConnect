@@ -3,8 +3,6 @@ package in.vmc.mcubeconnect.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,7 +17,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,7 +27,6 @@ import java.util.ArrayList;
 
 import in.vmc.mcubeconnect.R;
 import in.vmc.mcubeconnect.activity.Home;
-import in.vmc.mcubeconnect.activity.SiteDetail;
 import in.vmc.mcubeconnect.adapter.VisitAdapter;
 import in.vmc.mcubeconnect.callbacks.Popupcallback;
 import in.vmc.mcubeconnect.model.VisitData;
@@ -43,7 +39,7 @@ import in.vmc.mcubeconnect.utils.Utils;
 public class FragmentLike extends Fragment implements TAG, SwipeRefreshLayout.OnRefreshListener {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    ArrayList<in.vmc.mcubeconnect.model.VisitData> VisitData = new ArrayList<>();
+    private ArrayList<VisitData> VisitData = new ArrayList<>();
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -53,6 +49,7 @@ public class FragmentLike extends Fragment implements TAG, SwipeRefreshLayout.On
     private SwipeRefreshLayout swipeRefreshLayout;
     private ReferDialogFragment referDialogFragment = new ReferDialogFragment();
     private RelativeLayout mroot;
+    private String STATE_VISITLIKEDATA = "STATE_VISITLIKEDATA";
 
 
     public FragmentLike() {
@@ -79,6 +76,14 @@ public class FragmentLike extends Fragment implements TAG, SwipeRefreshLayout.On
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(STATE_VISITLIKEDATA, VisitData);
+
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragmentall, container, false);
@@ -87,16 +92,34 @@ public class FragmentLike extends Fragment implements TAG, SwipeRefreshLayout.On
         mroot = (RelativeLayout) view.findViewById(R.id.root);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setColorSchemeResources(
+                R.color.refresh_progress_1,
+                R.color.refresh_progress_2,
+                R.color.refresh_progress_3);
         adapter = new VisitAdapter(getActivity(), VisitData, mroot, FragmentLike.this);
         recyclerView.setAdapter(adapter);
-        GetLikes();
         return view;
+    }
+
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            VisitData = savedInstanceState.getParcelableArrayList(STATE_VISITLIKEDATA);
+            if (VisitData != null) {
+                adapter.setData(VisitData);
+                Log.d("RESPONSE", "ALL LODED SCREEN ORIENTATION");
+            }
+
+        } else {
+            GetLikes();
+        }
     }
 
     @Override
     public void onRefresh() {
 
-        swipeRefreshLayout.setRefreshing(false);
         GetLikes();
 
     }
@@ -121,22 +144,27 @@ public class FragmentLike extends Fragment implements TAG, SwipeRefreshLayout.On
         if (Utils.onlineStatus2(getActivity())) {
             new GetLikeHistory().execute();
         } else {
-            Snackbar snack = Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT)
-                    .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            GetLikes();
+            if (getActivity() != null) {
+                if (swipeRefreshLayout.isRefreshing()) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+                Snackbar snack = Snackbar.make(getView(), "No Internet Connection", Snackbar.LENGTH_SHORT)
+                        .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                GetLikes();
 
-                        }
-                    })
-                    .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.primary));
-            View view = snack.getView();
-            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-            tv.setTextColor(Color.WHITE);
-            snack.show();
+                            }
+                        })
+                        .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.accent));
+                View view = snack.getView();
+                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                tv.setTextColor(Color.WHITE);
+                snack.show();
+            }
         }
-
     }
+
 
     public void Resetdapter() {
         new Handler().postDelayed(new Runnable() {
@@ -232,11 +260,14 @@ public class FragmentLike extends Fragment implements TAG, SwipeRefreshLayout.On
 
         @Override
         protected void onPostExecute(ArrayList<VisitData> data) {
-
+            if (swipeRefreshLayout.isRefreshing()) {
+                swipeRefreshLayout.setRefreshing(false);
+            }
             if (data != null) {
                 VisitData = data;
-                adapter = new VisitAdapter(getActivity(), VisitData, mroot, FragmentLike.this);
-                recyclerView.setAdapter(adapter);
+                adapter.setData(data);
+//                adapter = new VisitAdapter(getActivity(), VisitData, mroot, FragmentLike.this);
+//                recyclerView.setAdapter(adapter);
             }
 
 

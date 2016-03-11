@@ -230,7 +230,7 @@
                     android:layout_width="10.0dip"
                     android:layout_height="25.0dip"
                     android:layout_weight="0.5"
-                    android:background="@drawable/ic_cal" />
+                    android:background="@drawable/ic_call" />
 
 
             </LinearLayout>
