@@ -137,7 +137,7 @@ public class FragmentOffer extends Fragment implements TAG, SwipeRefreshLayout.O
             }
 
         } else {
-            VisitData = MyApplication.getWritableDatabase().getAllSites(2);
+           VisitData = MyApplication.getWritableDatabase().getAllSites(2);
             if (VisitData != null && VisitData.size() > 0) {
                 adapter.setData(VisitData);
             } else {

@@ -116,7 +116,7 @@ public class MDatabase {
         public static final String COLUMN_BID = "bid";
         public static final String COLUMN_OFFER_DESC = "offerdesc";
         public static final String COLUMN_LIKE = "like";
-        public static final String COLUMN_DELETE = "delete";
+        public static final String COLUMN_DELETE = "del";
         public static final String COLUMN_SITE_DESC = "sitedesc";
 
         private static final String CREATE_TABLE_ALL_SITES = "CREATE TABLE " + TABLE_ALL + " (" +
@@ -172,8 +172,8 @@ public class MDatabase {
                 COLUMN_DELETE + " TEXT" +
                 ");";
 
-        private static final String DB_NAME = "allsitesdb";
-        private static final int DB_VERSION = 5;
+        private static final String DB_NAME = "Mconnect.db";
+        private static final int DB_VERSION = 9;
 
         private Context mContext;
 
@@ -190,9 +190,9 @@ public class MDatabase {
                 db.execSQL(CREATE_TABLE_LIKE_SITES);
                 db.execSQL(CREATE_TABLE_OFFER_SITES);
                 db.execSQL(CREATE_TABLE_VISIT_SITES);
-              Log.d("TABLE","create table box office executed");
+                Log.d("TABLE","onCreate Called");
             } catch (SQLiteException exception) {
-                Log.d("TABLE", exception.getMessage());
+                Log.d("TABLE", exception.getMessage().toString());
             }
         }
 
@@ -200,7 +200,7 @@ public class MDatabase {
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             try {
                 // L.m("upgrade table box office executed");
-
+                Log.d("TABLE", "onUpgrade Called");
                 db.execSQL(" DROP TABLE " + TABLE_ALL + " IF EXISTS;");
                 db.execSQL(" DROP TABLE " + TABLE_LIKE + " IF EXISTS;");
                 db.execSQL(" DROP TABLE " + TABLE_VISIT + " IF EXISTS;");
@@ -208,6 +208,7 @@ public class MDatabase {
                 onCreate(db);
             } catch (SQLiteException exception) {
                 //  L.t(mContext, exception + "");
+                Log.d("TABLE",exception.getMessage().toString());
             }
         }
 

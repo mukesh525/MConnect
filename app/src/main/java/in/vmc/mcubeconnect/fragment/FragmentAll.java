@@ -155,7 +155,7 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
             }
 
         } else {
-            VisitData = MyApplication.getWritableDatabase().getAllSites(0);
+          VisitData = MyApplication.getWritableDatabase().getAllSites(0);
             if (VisitData != null && VisitData.size() > 0) {
                 adapter.setData(VisitData);
             } else {
@@ -347,8 +347,8 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
             }
             loading = false;
             if (data != null) {
-                VisitData = data;
-                MyApplication.getWritableDatabase().insertAllSites(0,VisitData, true);
+                VisitData=data;
+                MyApplication.getWritableDatabase().insertAllSites(0, data, true);
                 adapter = new VisitAdapter(getActivity(), VisitData, mroot, FragmentAll.this);
                 recyclerView.setAdapter(adapter);
             }
@@ -457,7 +457,7 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
             } else if (data != null && data.size() > 0) {
 
                 VisitData = data;
-                MyApplication.getWritableDatabase().insertAllSites(0,data, false);
+                MyApplication.getWritableDatabase().insertAllSites(0, data, false);
                 adapter.setData(data);
 //                adapter = new VisitAdapter(getActivity(), VisitData, mroot, FragmentAll.this);
 //                recyclerView.setAdapter(adapter);

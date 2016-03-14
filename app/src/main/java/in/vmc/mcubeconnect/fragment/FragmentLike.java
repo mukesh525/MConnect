@@ -114,7 +114,7 @@ public class FragmentLike extends Fragment implements TAG, SwipeRefreshLayout.On
             }
 
         }else {
-            VisitData = MyApplication.getWritableDatabase().getAllSites(1);
+           VisitData = MyApplication.getWritableDatabase().getAllSites(1);
             if (VisitData != null && VisitData.size() > 0) {
                 adapter.setData(VisitData);
             } else {
