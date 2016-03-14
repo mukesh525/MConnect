@@ -27,6 +27,7 @@ import java.util.ArrayList;
 
 import in.vmc.mcubeconnect.R;
 import in.vmc.mcubeconnect.activity.Home;
+import in.vmc.mcubeconnect.activity.MyApplication;
 import in.vmc.mcubeconnect.adapter.VisitAdapter;
 import in.vmc.mcubeconnect.callbacks.Popupcallback;
 import in.vmc.mcubeconnect.model.VisitData;
@@ -112,8 +113,13 @@ public class FragmentLike extends Fragment implements TAG, SwipeRefreshLayout.On
                 Log.d("RESPONSE", "ALL LODED SCREEN ORIENTATION");
             }
 
-        } else {
-            GetLikes();
+        }else {
+            VisitData = MyApplication.getWritableDatabase().getAllSites(1);
+            if (VisitData != null && VisitData.size() > 0) {
+                adapter.setData(VisitData);
+            } else {
+                GetLikes();
+            }
         }
     }
 
@@ -265,6 +271,7 @@ public class FragmentLike extends Fragment implements TAG, SwipeRefreshLayout.On
             }
             if (data != null) {
                 VisitData = data;
+                MyApplication.getWritableDatabase().insertAllSites(1,VisitData, true);
                 adapter.setData(data);
 //                adapter = new VisitAdapter(getActivity(), VisitData, mroot, FragmentLike.this);
 //                recyclerView.setAdapter(adapter);

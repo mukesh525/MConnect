@@ -27,6 +27,7 @@ import java.util.ArrayList;
 
 import in.vmc.mcubeconnect.R;
 import in.vmc.mcubeconnect.activity.Home;
+import in.vmc.mcubeconnect.activity.MyApplication;
 import in.vmc.mcubeconnect.adapter.VisitAdapter;
 import in.vmc.mcubeconnect.callbacks.Popupcallback;
 import in.vmc.mcubeconnect.model.VisitData;
@@ -112,7 +113,12 @@ public class FragmentVisit extends Fragment implements TAG, SwipeRefreshLayout.O
             }
 
         } else {
-            GetVisits();
+            VisitData = MyApplication.getWritableDatabase().getAllSites(3);
+            if (VisitData != null && VisitData.size() > 0) {
+                adapter.setData(VisitData);
+            } else {
+                GetVisits();
+            }
         }
     }
 
@@ -267,6 +273,7 @@ public class FragmentVisit extends Fragment implements TAG, SwipeRefreshLayout.O
             }
             if (data != null) {
                 VisitData = data;
+                MyApplication.getWritableDatabase().insertAllSites(3, VisitData, true);
                 //adapter.setData(data);
                 adapter = new VisitAdapter(getActivity(), VisitData, mroot, FragmentVisit.this);
                 recyclerView.setAdapter(adapter);
