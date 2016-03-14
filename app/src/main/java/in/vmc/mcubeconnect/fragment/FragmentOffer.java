@@ -53,7 +53,7 @@ public class FragmentOffer extends Fragment implements TAG, SwipeRefreshLayout.O
     private boolean loading;
     private LinearLayout pdloadmore;
     private String STATE_VISITOFFERDATA = "STATE_VISITOFFERDATA";
-    private Snackbar snack;
+
 
     public FragmentOffer() {
         // Required empty public constructor
@@ -131,14 +131,14 @@ public class FragmentOffer extends Fragment implements TAG, SwipeRefreshLayout.O
         super.onActivityCreated(savedInstanceState);
 
         if (savedInstanceState != null) {
-           VisitData = savedInstanceState.getParcelableArrayList(STATE_VISITOFFERDATA);
+            VisitData = savedInstanceState.getParcelableArrayList(STATE_VISITOFFERDATA);
             if (VisitData != null) {
                 adapter.setData(VisitData);
                 Log.d("RESPONSE", "Offer LODED SCREEN ORIENTATION");
             }
 
         } else {
-           VisitData = MyApplication.getWritableDatabase().getAllSites(2);
+            VisitData = MyApplication.getWritableDatabase().getAllSites(2);
             if (VisitData != null && VisitData.size() > 0) {
                 adapter.setData(VisitData);
             } else {
@@ -179,23 +179,26 @@ public class FragmentOffer extends Fragment implements TAG, SwipeRefreshLayout.O
                 Home.snack.dismiss();
             }
         } else {
-            if (!Home.snack.isShown()&&getActivity() != null) {
+            if (getActivity() != null) {
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
-                 snack = Snackbar.make(getView(), "No Internet Connection", Snackbar.LENGTH_SHORT)
-                        .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                GetVisits();
+                if(!Home.snack.isShown()) {
+                    Home.snack = Snackbar.make(getView(), "No Internet Connection", Snackbar.LENGTH_SHORT)
+                            .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    GetVisits();
 
-                            }
-                        })
-                        .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.accent));
-                View view = snack.getView();
-                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-                tv.setTextColor(Color.WHITE);   snack.setDuration(Snackbar.LENGTH_INDEFINITE);
-                snack.show();
+                                }
+                            })
+                            .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.accent));
+                    View view = Home.snack.getView();
+                    TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                    tv.setTextColor(Color.WHITE);
+                    Home.snack.setDuration(Snackbar.LENGTH_INDEFINITE);
+                    Home.snack.show();
+                }
             }
         }
 
@@ -211,23 +214,25 @@ public class FragmentOffer extends Fragment implements TAG, SwipeRefreshLayout.O
                 Home.snack.dismiss();
             }
         } else {
-            if (!Home.snack.isShown()&&getActivity() != null) {
+            if (getActivity() != null) {
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
-                snack = Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT)
-                        .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                GetMoreData();
+                if (!Home.snack.isShown()) {
+                    Home.snack = Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT)
+                            .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    GetMoreData();
 
-                            }
-                        })
-                        .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.accent));
-                View view = snack.getView();
-                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-                tv.setTextColor(Color.WHITE);
-                snack.show();
+                                }
+                            })
+                            .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.accent));
+                    View view = Home.snack.getView();
+                    TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                    tv.setTextColor(Color.WHITE);
+                    Home.snack.show();
+                }
             }
         }
 
@@ -333,7 +338,7 @@ public class FragmentOffer extends Fragment implements TAG, SwipeRefreshLayout.O
             }
             if (data != null) {
                 VisitData = data;
-                MyApplication.getWritableDatabase().insertAllSites(2,VisitData, true);
+                MyApplication.getWritableDatabase().insertAllSites(2, VisitData, true);
                 adapter = new VisitAdapter(getActivity(), VisitData, mroot, FragmentOffer.this);
                 recyclerView.setAdapter(adapter);
             }
@@ -442,7 +447,7 @@ public class FragmentOffer extends Fragment implements TAG, SwipeRefreshLayout.O
 
             } else if (data != null && data.size() > 0) {
                 VisitData = data;
-                MyApplication.getWritableDatabase().insertAllSites(2,data, false);
+                MyApplication.getWritableDatabase().insertAllSites(2, data, false);
                 adapter.setData(data);
 //                adapter = new VisitAdapter(getActivity(), VisitData, mroot, FragmentOffer.this);
 //                recyclerView.setAdapter(adapter);

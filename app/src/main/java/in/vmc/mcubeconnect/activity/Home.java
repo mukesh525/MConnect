@@ -324,7 +324,7 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
         enableBluetooth();
 
         getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setTitle(Html.fromHtml("<large>MCube Connect</large>"));
+        getSupportActionBar().setTitle(Html.fromHtml("<large>MConnect</large>"));
         getSupportActionBar().setHomeButtonEnabled(false);      // Disable the button
         getSupportActionBar().setDisplayHomeAsUpEnabled(false); // Remove the left caret
         getSupportActionBar().setDisplayShowHomeEnabled(false); // Remove the icon
@@ -698,6 +698,9 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
             fragmnetAll.onResume();
 
         }
+        if (snack.isShown()) {
+            snack.dismiss();
+        }
 
 
     }
@@ -837,7 +840,10 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
 
             startActivity(intent);
         } else {
-            Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT).show();
+            if (!snack.isShown()) {
+                snack = Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT);
+                snack.show();
+            }
         }
     }
 

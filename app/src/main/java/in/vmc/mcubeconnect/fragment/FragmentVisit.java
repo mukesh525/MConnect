@@ -51,7 +51,6 @@ public class FragmentVisit extends Fragment implements TAG, SwipeRefreshLayout.O
     private ReferDialogFragment referDialogFragment = new ReferDialogFragment();
     private RelativeLayout mroot;
     private String STATE_VISITDATA = "STATE_VISITDATA";
-    private Snackbar snack;
 
 
     public FragmentVisit() {
@@ -154,24 +153,26 @@ public class FragmentVisit extends Fragment implements TAG, SwipeRefreshLayout.O
                 Home.snack.dismiss();
             }
         } else {
-            if (!Home.snack.isShown()&&getActivity() != null) {
+            if (getActivity() != null) {
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
-               snack = Snackbar.make(getView(), "No Internet Connection", Snackbar.LENGTH_SHORT)
-                        .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                GetVisits();
+                if (!Home.snack.isShown()) {
+                    Home.snack = Snackbar.make(getView(), "No Internet Connection", Snackbar.LENGTH_SHORT)
+                            .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    GetVisits();
 
-                            }
-                        })
-                        .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.accent));
-                View view = snack.getView();
-                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-                tv.setTextColor(Color.WHITE);
-                snack.setDuration(Snackbar.LENGTH_INDEFINITE);
-                snack.show();
+                                }
+                            })
+                            .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.accent));
+                    View view = Home.snack.getView();
+                    TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                    tv.setTextColor(Color.WHITE);
+                    Home.snack.setDuration(Snackbar.LENGTH_INDEFINITE);
+                    Home.snack.show();
+                }
             }
         }
 

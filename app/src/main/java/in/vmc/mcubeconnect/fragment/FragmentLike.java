@@ -51,7 +51,6 @@ public class FragmentLike extends Fragment implements TAG, SwipeRefreshLayout.On
     private ReferDialogFragment referDialogFragment = new ReferDialogFragment();
     private RelativeLayout mroot;
     private String STATE_VISITLIKEDATA = "STATE_VISITLIKEDATA";
-    private Snackbar snack;
 
 
     public FragmentLike() {
@@ -114,8 +113,8 @@ public class FragmentLike extends Fragment implements TAG, SwipeRefreshLayout.On
                 Log.d("RESPONSE", "ALL LODED SCREEN ORIENTATION");
             }
 
-        }else {
-           VisitData = MyApplication.getWritableDatabase().getAllSites(1);
+        } else {
+            VisitData = MyApplication.getWritableDatabase().getAllSites(1);
             if (VisitData != null && VisitData.size() > 0) {
                 adapter.setData(VisitData);
             } else {
@@ -154,27 +153,30 @@ public class FragmentLike extends Fragment implements TAG, SwipeRefreshLayout.On
                 Home.snack.dismiss();
             }
         } else {
-            if (!Home.snack.isShown()&&getActivity() != null) {
+            if (getActivity() != null) {
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
-                snack = Snackbar.make(getView(), "No Internet Connection", Snackbar.LENGTH_SHORT)
-                        .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                GetLikes();
+                if (!Home.snack.isShown()) {
+                    Home.snack = Snackbar.make(getView(), "No Internet Connection", Snackbar.LENGTH_SHORT)
+                            .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    GetLikes();
 
-                            }
-                        })
-                        .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.accent));
-                View view = snack.getView();
-                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-                tv.setTextColor(Color.WHITE);
-                snack.setDuration(Snackbar.LENGTH_INDEFINITE);
-                snack.show();
+                                }
+                            })
+                            .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.accent));
+                    View view = Home.snack.getView();
+                    TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                    tv.setTextColor(Color.WHITE);
+                    Home.snack.setDuration(Snackbar.LENGTH_INDEFINITE);
+                    Home.snack.show();
+                }
             }
         }
     }
+
 
 
     public void Resetdapter() {
@@ -188,104 +190,104 @@ public class FragmentLike extends Fragment implements TAG, SwipeRefreshLayout.On
 
     }
 
-    class GetLikeHistory extends AsyncTask<Void, Void, ArrayList<VisitData>> {
-        String message = "n";
-        String code = "n";
-        JSONObject response = null;
-        VisitData visitData = null;
-        JSONArray data = null;
-        ArrayList<VisitData> visitDatas;
+class GetLikeHistory extends AsyncTask<Void, Void, ArrayList<VisitData>> {
+    String message = "n";
+    String code = "n";
+    JSONObject response = null;
+    VisitData visitData = null;
+    JSONArray data = null;
+    ArrayList<VisitData> visitDatas;
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
 
-        }
+    }
 
 
-        @Override
-        protected ArrayList<VisitData> doInBackground(Void... params) {
-            // TODO Auto-generated method stub
+    @Override
+    protected ArrayList<VisitData> doInBackground(Void... params) {
+        // TODO Auto-generated method stub
 
-            try {
-                response = JSONParser.GetVistDetail(GET_LIKE, ((Home) getActivity()).authkey);
-                Log.d("RESPONSE", response.toString());
-                visitDatas = new ArrayList<VisitData>();
+        try {
+            response = JSONParser.GetVistDetail(GET_LIKE, ((Home) getActivity()).authkey);
+            Log.d("RESPONSE", response.toString());
+            visitDatas = new ArrayList<VisitData>();
 
-                if (response.has(CODE)) {
-                    code = response.getString(CODE);
+            if (response.has(CODE)) {
+                code = response.getString(CODE);
 
-                }
-                if (response.has(MESSAGE)) {
-                    message = response.getString(MESSAGE);
-                }
-                if (response.has(DATA)) {
-                    visitDatas = new ArrayList<>();
-                    data = response.getJSONArray(DATA);
-                    for (int i = 0; i < data.length(); i++) {
-                        JSONObject currentvisit = data.getJSONObject(i);
-                        visitData = new VisitData();
-                        if (currentvisit.has(SITENAME)) {
-                            visitData.setSitename(currentvisit.getString(SITENAME));
-                        }
-                        if (currentvisit.has(SITEID)) {
-                            visitData.setSiteid(currentvisit.getString(SITEID));
-                        }
-                        if (currentvisit.has(SITEDESC)) {
-                            visitData.setSitedesc(currentvisit.getString(SITEDESC));
-                        }
-                        if (currentvisit.has(SITEICON)) {
-                            visitData.setSiteicon(currentvisit.getString(SITEICON));
-                            visitData.setBitmapLogp(JSONParser.getBitmapFromURL(visitData.getSiteicon()));
-                        }
-                        if (currentvisit.has(NUMBER)) {
-                            visitData.setNumber(currentvisit.getString(NUMBER));
-                        }
-                        if (currentvisit.has(BID)) {
-                            visitData.setBid(currentvisit.getString(BID));
-                        }
-                        if (currentvisit.has(OFFER_PER)) {
-                            visitData.setOffer(currentvisit.getString(OFFER_PER));
-                        }
-                        if (currentvisit.has(OFFER_DEC)) {
-                            visitData.setOffer_desc(currentvisit.getString(OFFER_DEC));
-                        }
-                        if (currentvisit.has(LIKES)) {
-                            String Like = currentvisit.getString(LIKES);
-                            if (Like.equals("1")) {
-                                visitData.setLike(true);
-                            } else {
-                                visitData.setLike(false);
-                            }
-                        }
-                        visitDatas.add(visitData);
-
+            }
+            if (response.has(MESSAGE)) {
+                message = response.getString(MESSAGE);
+            }
+            if (response.has(DATA)) {
+                visitDatas = new ArrayList<>();
+                data = response.getJSONArray(DATA);
+                for (int i = 0; i < data.length(); i++) {
+                    JSONObject currentvisit = data.getJSONObject(i);
+                    visitData = new VisitData();
+                    if (currentvisit.has(SITENAME)) {
+                        visitData.setSitename(currentvisit.getString(SITENAME));
                     }
+                    if (currentvisit.has(SITEID)) {
+                        visitData.setSiteid(currentvisit.getString(SITEID));
+                    }
+                    if (currentvisit.has(SITEDESC)) {
+                        visitData.setSitedesc(currentvisit.getString(SITEDESC));
+                    }
+                    if (currentvisit.has(SITEICON)) {
+                        visitData.setSiteicon(currentvisit.getString(SITEICON));
+                        visitData.setBitmapLogp(JSONParser.getBitmapFromURL(visitData.getSiteicon()));
+                    }
+                    if (currentvisit.has(NUMBER)) {
+                        visitData.setNumber(currentvisit.getString(NUMBER));
+                    }
+                    if (currentvisit.has(BID)) {
+                        visitData.setBid(currentvisit.getString(BID));
+                    }
+                    if (currentvisit.has(OFFER_PER)) {
+                        visitData.setOffer(currentvisit.getString(OFFER_PER));
+                    }
+                    if (currentvisit.has(OFFER_DEC)) {
+                        visitData.setOffer_desc(currentvisit.getString(OFFER_DEC));
+                    }
+                    if (currentvisit.has(LIKES)) {
+                        String Like = currentvisit.getString(LIKES);
+                        if (Like.equals("1")) {
+                            visitData.setLike(true);
+                        } else {
+                            visitData.setLike(false);
+                        }
+                    }
+                    visitDatas.add(visitData);
+
                 }
-
-            } catch (Exception e) {
-
             }
-            return visitDatas;
+
+        } catch (Exception e) {
+
         }
+        return visitDatas;
+    }
 
-        @Override
-        protected void onPostExecute(ArrayList<VisitData> data) {
-            if (swipeRefreshLayout.isRefreshing()) {
-                swipeRefreshLayout.setRefreshing(false);
-            }
-            if (data != null) {
-                VisitData = data;
-                MyApplication.getWritableDatabase().insertAllSites(1,VisitData, true);
-                adapter.setData(data);
+    @Override
+    protected void onPostExecute(ArrayList<VisitData> data) {
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
+        if (data != null) {
+            VisitData = data;
+            MyApplication.getWritableDatabase().insertAllSites(1, VisitData, true);
+            adapter.setData(data);
 //                adapter = new VisitAdapter(getActivity(), VisitData, mroot, FragmentLike.this);
 //                recyclerView.setAdapter(adapter);
-            }
-
-
         }
 
 
     }
+
+
+}
 
 }

@@ -57,7 +57,7 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
     private RelativeLayout mroot;
     private LinearLayout pdloadmore;
     private String STATE_VISITALLDATA = "STATE_VISITALLDATA";
-    private Snackbar snack;
+
 
     public FragmentAll() {
         // Required empty public constructor
@@ -156,7 +156,7 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
             }
 
         } else {
-          VisitData = MyApplication.getWritableDatabase().getAllSites(0);
+            VisitData = MyApplication.getWritableDatabase().getAllSites(0);
             if (VisitData != null && VisitData.size() > 0) {
                 adapter.setData(VisitData);
             } else {
@@ -189,23 +189,29 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
                 Home.snack.dismiss();
             }
         } else {
-            if (!Home.snack.isShown()&&getActivity() != null) {
+            if (getActivity() != null) {
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
-                }
-              Home.snack = Snackbar.make(getView(), "No Internet Connection", Snackbar.LENGTH_SHORT)
-                        .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                GetVisits();
 
-                            }
-                        })
-                        .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.accent));
-                View view = Home.snack.getView();
-                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-                tv.setTextColor(Color.WHITE);
-                Home.snack.show();
+                }
+
+                if (!Home.snack.isShown()) {
+
+                    Home.snack = Snackbar.make(getView(), "No Internet Connection", Snackbar.LENGTH_SHORT)
+                            .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    GetVisits();
+
+                                }
+                            })
+                            .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.accent));
+                    View view = Home.snack.getView();
+                    TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                    tv.setTextColor(Color.WHITE);
+                    Home.snack.setDuration(Snackbar.LENGTH_INDEFINITE);
+                    Home.snack.show();
+                }
             }
         }
 
@@ -217,28 +223,30 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
             MIN = MIN + 10;
             new GetMoreData().execute();
             if (Home.snack.isShown()) {
-               Home.snack.dismiss();
+                Home.snack.dismiss();
             }
         } else {
-            if (!Home.snack.isShown()&&getActivity() != null) {
+            if (getActivity() != null) {
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
-                 Home.snack = Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT)
-                        .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                GetVisits();
+                if (!Home.snack.isShown()) {
 
-                            }
-                        })
-                        .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.accent));
+                    Home.snack = Snackbar.make(getView(), "No Internet Connection", Snackbar.LENGTH_SHORT)
+                            .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    GetMoreData();
 
-                View view = Home.snack.getView();
-                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-                tv.setTextColor(Color.WHITE);
-                Home.snack.setDuration(Snackbar.LENGTH_INDEFINITE);
-                Home.snack.show();
+                                }
+                            })
+                            .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.accent));
+                    View view = Home.snack.getView();
+                    TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                    tv.setTextColor(Color.WHITE);
+                    Home.snack.setDuration(Snackbar.LENGTH_INDEFINITE);
+                    Home.snack.show();
+                }
             }
         }
 
@@ -356,7 +364,7 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
             }
             loading = false;
             if (data != null) {
-                VisitData=data;
+                VisitData = data;
                 MyApplication.getWritableDatabase().insertAllSites(0, data, true);
                 adapter = new VisitAdapter(getActivity(), VisitData, mroot, FragmentAll.this);
                 recyclerView.setAdapter(adapter);
@@ -461,7 +469,11 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
 
             if (code.equals("202") && Home.currentPosition == 0 && getActivity() != null) {
 
-                Snackbar.make(mroot, "No more records availabe", Snackbar.LENGTH_SHORT).show();
+                if (Home.snack.isShown()) {
+                    Home.snack.dismiss();
+                }
+                Home.snack = Snackbar.make(mroot, "No more records availabe", Snackbar.LENGTH_SHORT);
+                Home.snack.show();
 
             } else if (data != null && data.size() > 0) {
 
