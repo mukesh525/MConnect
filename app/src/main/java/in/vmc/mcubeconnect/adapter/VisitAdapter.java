@@ -23,6 +23,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
@@ -41,6 +43,7 @@ import in.vmc.mcubeconnect.fragment.FragmentOffer;
 import in.vmc.mcubeconnect.fragment.FragmentVisit;
 import in.vmc.mcubeconnect.model.VisitData;
 import in.vmc.mcubeconnect.utils.JSONParser;
+import in.vmc.mcubeconnect.utils.SingleTon;
 import in.vmc.mcubeconnect.utils.TAG;
 import in.vmc.mcubeconnect.utils.Utils;
 
@@ -49,6 +52,7 @@ import in.vmc.mcubeconnect.utils.Utils;
  */
 public class VisitAdapter extends RecyclerView.Adapter<VisitAdapter.FollowViewHolder> implements TAG {
 
+    private final SingleTon volleySingleton;
     public ViewClickedListner viewClickedListner;
     public RelativeLayout mroot;
     public Fragment fragment;
@@ -56,6 +60,7 @@ public class VisitAdapter extends RecyclerView.Adapter<VisitAdapter.FollowViewHo
     private Context context;
     private LayoutInflater inflator;
     private int position;
+    private ImageLoader imageLoader;
 
 
     public VisitAdapter(Context context, ArrayList<VisitData> visitDatas, RelativeLayout mroot, Fragment fragment) {
@@ -64,11 +69,15 @@ public class VisitAdapter extends RecyclerView.Adapter<VisitAdapter.FollowViewHo
         this.mroot = mroot;
         this.fragment = fragment;
         this.viewClickedListner = (Home) context;
+        volleySingleton = SingleTon.getInstance();
+        imageLoader = volleySingleton.getImageLoader();
     }
+
     public void setData(ArrayList<VisitData> visitDatas) {
         this.visitDatas = visitDatas;
         notifyDataSetChanged();
     }
+
     public static void getImagesList(final String siteId, final Context context, final RelativeLayout mroot) {
 
 
@@ -194,10 +203,29 @@ public class VisitAdapter extends RecyclerView.Adapter<VisitAdapter.FollowViewHo
         if (visitDatas.get(position).getBitmapLogp() != null) {
             holder.Logo.setImageBitmap(visitDatas.get(position).getBitmapLogp());
         } else {
-            new GetImageFromUrl(visitDatas.get(position).getSiteicon(), holder.Logo, true).execute();
+            //new GetImageFromUrl(visitDatas.get(position).getSiteicon(), holder.Logo, true).execute();
+            loadImages(visitDatas.get(position).getSiteicon(), holder);
         }
 
 
+    }
+
+    private void loadImages(String urlThumbnail, final FollowViewHolder holder) {
+        imageLoader.get(urlThumbnail, new ImageLoader.ImageListener() {
+            @Override
+            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                if (response.getBitmap() != null) {
+                    Bitmap resize = Bitmap.createScaledBitmap(response.getBitmap(), 150, 150, false);
+                    visitDatas.get(position).setBitmapLogp(response.getBitmap());
+                    holder.Logo.setImageBitmap(resize);
+                }
+            }
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                holder.Logo.setImageResource(R.drawable.ic_errorr);
+            }
+        });
     }
 
     @Override

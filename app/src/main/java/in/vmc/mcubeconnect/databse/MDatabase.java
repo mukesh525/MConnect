@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -49,8 +50,6 @@ public class MDatabase {
             statement.bindString(11, visitData.isDelete() ? "1" : "0");
             statement.execute();
         }
-        //set the transaction as successful and end the transaction
-        //    L.m("inserting entries " + listMovies.size() + new Date(System.currentTimeMillis()));
         mDatabase.setTransactionSuccessful();
         mDatabase.endTransaction();
     }
@@ -72,14 +71,15 @@ public class MDatabase {
                 SiteHelper.COLUMN_OFFER,
                 SiteHelper.COLUMN_BID,
                 SiteHelper.COLUMN_OFFER_DESC,
-                SiteHelper.COLUMN_LIKE,
                 SiteHelper.COLUMN_SITE_DESC,
+                SiteHelper.COLUMN_LIKE,
                 SiteHelper.COLUMN_DELETE
 
         };
-        Cursor cursor = mDatabase.query((table == ALL ? SiteHelper.TABLE_ALL : table == LIKE ? SiteHelper.TABLE_LIKE : table == OFFER ? SiteHelper.TABLE_OFFER : SiteHelper.TABLE_VISIT), columns, null, null, null, null, null);
+
+      //  Cursor cursor = mDatabase.query((table == ALL ? SiteHelper.TABLE_ALL : table == LIKE ? SiteHelper.TABLE_LIKE : table == OFFER ? SiteHelper.TABLE_OFFER : SiteHelper.TABLE_VISIT), columns, null, null, null, null, null);
+        Cursor cursor = mDatabase.query((table == ALL ? SiteHelper.TABLE_ALL : table == LIKE ? SiteHelper.TABLE_LIKE : table == OFFER ? SiteHelper.TABLE_OFFER : SiteHelper.TABLE_VISIT), null, null, null, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
-            // L.m("loading entries " + cursor.getCount() + new Date(System.currentTimeMillis()));
             do {
 
                 VisitData visitData = new VisitData();
@@ -103,11 +103,11 @@ public class MDatabase {
 
 
     private static class SiteHelper extends SQLiteOpenHelper {
-        public static final String TABLE_ALL = "all_sites";
-        public static final String TABLE_LIKE = "like_sites";
-        public static final String TABLE_OFFER = "offer_sites";
-        public static final String TABLE_VISIT = "visit_sites";
-        public static final String COLUMN_UID = "_id";
+        public static final String TABLE_ALL ="all_sites";
+        public static final String TABLE_LIKE ="like_sites";
+        public static final String TABLE_OFFER ="offer_sites";
+        public static final String TABLE_VISIT ="visit_sites";
+        public static final String COLUMN_UID ="_id";
         public static final String COLUMN_SITENAME = "sitename";
         public static final String COLUMN_SITE_ID = "siteid";
         public static final String COLUMN_SITEICON = "siteicon";
@@ -172,8 +172,8 @@ public class MDatabase {
                 COLUMN_DELETE + " TEXT" +
                 ");";
 
-        private static final String DB_NAME = "allsites_db";
-        private static final int DB_VERSION = 4;
+        private static final String DB_NAME = "allsitesdb";
+        private static final int DB_VERSION = 5;
 
         private Context mContext;
 
@@ -184,14 +184,15 @@ public class MDatabase {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
+            Log.d("TABLE","on create called");
             try {
                 db.execSQL(CREATE_TABLE_ALL_SITES);
                 db.execSQL(CREATE_TABLE_LIKE_SITES);
                 db.execSQL(CREATE_TABLE_OFFER_SITES);
                 db.execSQL(CREATE_TABLE_VISIT_SITES);
-                // L.m("create table box office executed");
+              Log.d("TABLE","create table box office executed");
             } catch (SQLiteException exception) {
-                // L.t(mContext, exception + "");
+                Log.d("TABLE", exception.getMessage());
             }
         }
 
