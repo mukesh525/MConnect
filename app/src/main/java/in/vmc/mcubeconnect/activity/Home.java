@@ -189,6 +189,7 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
     private Button sensorsend;
     private String bid;
     private float scaleFactor;
+    public static Snackbar snack;
 
     public static String encodeTobase64(Bitmap image) {
         Bitmap immage = image;
@@ -206,6 +207,7 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
         return BitmapFactory
                 .decodeByteArray(decodedByte, 0, decodedByte.length);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -218,6 +220,8 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         widthPixels = metrics.widthPixels;
         heightPixels = metrics.heightPixels;
+        mroot = (LinearLayout) findViewById(R.id.rootLayout);
+        snack = Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
         scaleFactor = metrics.density;
         widthDp = widthPixels / scaleFactor;
         heightDp = heightPixels / scaleFactor;
@@ -238,7 +242,7 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
                 R.string.drawer_close);
         mDrawerLayout.setDrawerListener(drawerToggle);
         drawerToggle.syncState();
-        mroot = (LinearLayout) findViewById(R.id.rootLayout);
+
         View header = mDrawer.getHeaderView(0);
         tvname = (TextView) header.findViewById(R.id.name);
         tvemail = (TextView) header.findViewById(R.id.email);
@@ -488,13 +492,13 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
                             CheckVisit(mbeacons.get(0));
                         } else {
 
-                            if (!mvisitedBeacon.contains(mbeacons.get(0).getId2()) && !firstVisitDailog.isVisible() && isPopopVisible()) {
-                                Snackbar snack = Snackbar.make(mroot, "New Location Detected", Snackbar.LENGTH_LONG)
+                            if (!snack.isShown() && !mvisitedBeacon.contains(mbeacons.get(0).getId2()) && !firstVisitDailog.isVisible() && isPopopVisible()) {
+                                snack = Snackbar.make(mroot, "New Location Detected", Snackbar.LENGTH_LONG)
                                         .setAction("Show", new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
                                                 hidePopup();
-                                                Log.d("TAG", "NEW Location Detected");
+                                                Log.d("TAG", "New Location Detected");
 
                                             }
                                         })
@@ -502,6 +506,7 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
                                 View view = snack.getView();
                                 TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
                                 tv.setTextColor(Color.WHITE);
+                                snack.setDuration(Snackbar.LENGTH_INDEFINITE);
                                 snack.show();
 
                             }
@@ -826,11 +831,13 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
     @Override
     public void onClick(View v) {
 
-        if (mModel != null) {
+        if (mModel != null && Utils.onlineStatus2(Home.this)) {
             Intent intent = new Intent(Home.this, DatailImgeView.class);
             intent.putExtra("mylist", mModel.getImages());
 
             startActivity(intent);
+        } else {
+            Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -839,32 +846,42 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
         if (!processing) {
             if (Utils.onlineStatus2(Home.this)) {
                 new CheckVisit(BeaconId).execute();
+                if (snack.isShown()) {
+                    snack.dismiss();
+                }
             } else {
-                Snackbar snack = Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT)
-                        .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                CheckVisit(BeaconId);
+                if (!snack.isShown()) {
+                    snack = Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT)
+                            .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    CheckVisit(BeaconId);
 
-                            }
-                        })
-                        .setActionTextColor(ContextCompat.getColor(Home.this, R.color.accent));
-                View view = snack.getView();
-                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-                tv.setTextColor(Color.WHITE);
-                snack.show();
+                                }
+                            })
+                            .setActionTextColor(ContextCompat.getColor(Home.this, R.color.accent));
+                    View view = snack.getView();
+                    TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                    tv.setTextColor(Color.WHITE);
+                    snack.setDuration(Snackbar.LENGTH_INDEFINITE);
+                    snack.show();
+                }
             }
         }
     }
 
     @Override
     public void OnItemClick(int position, View v, VisitData visitData) {
-        SiteDetail.siteId = visitData.getSiteid();
-        SiteDetail.authkey = authkey;
-        Intent intent = new Intent(Home.this, SiteDetail.class);
-        intent.putExtra("ID", visitData.getSiteid());
-        intent.putExtra("authkey", authkey);
-        startActivity(intent);
+        if (Utils.onlineStatus2(Home.this)) {
+            SiteDetail.siteId = visitData.getSiteid();
+            SiteDetail.authkey = authkey;
+            Intent intent = new Intent(Home.this, SiteDetail.class);
+            intent.putExtra("ID", visitData.getSiteid());
+            intent.putExtra("authkey", authkey);
+            startActivity(intent);
+        } else {
+            Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -932,20 +949,26 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
 
         if (Utils.onlineStatus2(Home.this)) {
             new SetLikeUnlike(imageView, siteid, bid).execute();
+            if (snack.isShown()) {
+                snack.dismiss();
+            }
         } else {
-            Snackbar snack = Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT)
-                    .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            GetLikeUnlike(imageView, siteid, bid);
+            if (!snack.isShown()) {
+                snack = Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT)
+                        .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                GetLikeUnlike(imageView, siteid, bid);
 
-                        }
-                    })
-                    .setActionTextColor(ContextCompat.getColor(Home.this, R.color.accent));
-            View view = snack.getView();
-            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-            tv.setTextColor(Color.WHITE);
-            snack.show();
+                            }
+                        })
+                        .setActionTextColor(ContextCompat.getColor(Home.this, R.color.accent));
+                View view = snack.getView();
+                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                tv.setTextColor(Color.WHITE);
+                snack.setDuration(Snackbar.LENGTH_INDEFINITE);
+                snack.show();
+            }
         }
 
     }
@@ -954,20 +977,26 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
 
         if (Utils.onlineStatus2(Home.this)) {
             new SubmitQuery(authkey, interest, query, siteid, beaconId).execute();
+            if (snack.isShown()) {
+                snack.dismiss();
+            }
         } else {
-            Snackbar snack = Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT)
-                    .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            onSubmitQuery(interest, query, siteid, beaconId);
+            if (!snack.isShown()) {
+                snack = Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT)
+                        .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                onSubmitQuery(interest, query, siteid, beaconId);
 
-                        }
-                    })
-                    .setActionTextColor(ContextCompat.getColor(Home.this, R.color.accent));
-            View view = snack.getView();
-            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-            tv.setTextColor(Color.WHITE);
-            snack.show();
+                            }
+                        })
+                        .setActionTextColor(ContextCompat.getColor(Home.this, R.color.accent));
+                View view = snack.getView();
+                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                tv.setTextColor(Color.WHITE);
+                snack.setDuration(Snackbar.LENGTH_INDEFINITE);
+                snack.show();
+            }
         }
 
     }
@@ -976,20 +1005,26 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
 
         if (Utils.onlineStatus2(Home.this)) {
             new ReferQuery(authkey, siteid, name, messagee, phone, email).execute();
+            if (snack.isShown()) {
+                snack.dismiss();
+            }
         } else {
-            Snackbar snack = Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT)
-                    .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            onReferSumbit(authkey, siteid, name, messagee, phone, email);
+            if (!snack.isShown()) {
+                snack = Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT)
+                        .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                onReferSumbit(authkey, siteid, name, messagee, phone, email);
 
-                        }
-                    })
-                    .setActionTextColor(ContextCompat.getColor(Home.this, R.color.accent));
-            View view = snack.getView();
-            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-            tv.setTextColor(Color.WHITE);
-            snack.show();
+                            }
+                        })
+                        .setActionTextColor(ContextCompat.getColor(Home.this, R.color.accent));
+                View view = snack.getView();
+                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                tv.setTextColor(Color.WHITE);
+                snack.setDuration(Snackbar.LENGTH_INDEFINITE);
+                snack.show();
+            }
         }
 
     }
@@ -1030,8 +1065,8 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
 
             try {
                 response = JSONParser.CheckVisitJASON(CHECK_VISIT, authkey, BeaconId.getId2().toString());
-             //   Log.d("RESPONSE", response.toString());
-                Log.d("RESPONSE", "Beacon :"+BeaconId.getId2().toString()+" "+response.toString());
+                //   Log.d("RESPONSE", response.toString());
+                Log.d("RESPONSE", "Beacon :" + BeaconId.getId2().toString() + " " + response.toString());
                 model = new Model();
 
                 if (response.has(CODE)) {
@@ -1139,7 +1174,7 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
             processing = false;
 
             if (data != null) {
-                Log.d("LOG", "Beacon :"+BeaconId+" "+data.toString());
+                Log.d("LOG", "Beacon :" + BeaconId + " " + data.toString());
 
 
                 if (code.equals("202")) {

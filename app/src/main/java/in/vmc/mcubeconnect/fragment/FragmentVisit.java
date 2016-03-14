@@ -51,6 +51,7 @@ public class FragmentVisit extends Fragment implements TAG, SwipeRefreshLayout.O
     private ReferDialogFragment referDialogFragment = new ReferDialogFragment();
     private RelativeLayout mroot;
     private String STATE_VISITDATA = "STATE_VISITDATA";
+    private Snackbar snack;
 
 
     public FragmentVisit() {
@@ -149,12 +150,15 @@ public class FragmentVisit extends Fragment implements TAG, SwipeRefreshLayout.O
 
         if (Utils.onlineStatus2(getActivity())) {
             new GetVistHistory().execute();
+            if (Home.snack.isShown()) {
+                Home.snack.dismiss();
+            }
         } else {
-            if (getActivity() != null) {
+            if (!Home.snack.isShown()&&getActivity() != null) {
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
-                Snackbar snack = Snackbar.make(getView(), "No Internet Connection", Snackbar.LENGTH_SHORT)
+               snack = Snackbar.make(getView(), "No Internet Connection", Snackbar.LENGTH_SHORT)
                         .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -166,6 +170,7 @@ public class FragmentVisit extends Fragment implements TAG, SwipeRefreshLayout.O
                 View view = snack.getView();
                 TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
                 tv.setTextColor(Color.WHITE);
+                snack.setDuration(Snackbar.LENGTH_INDEFINITE);
                 snack.show();
             }
         }

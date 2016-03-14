@@ -57,6 +57,7 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
     private RelativeLayout mroot;
     private LinearLayout pdloadmore;
     private String STATE_VISITALLDATA = "STATE_VISITALLDATA";
+    private Snackbar snack;
 
     public FragmentAll() {
         // Required empty public constructor
@@ -184,12 +185,15 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
         if (Utils.onlineStatus2(getActivity())) {
             MIN = 0;
             new GetVistHistory().execute();
+            if (Home.snack.isShown()) {
+                Home.snack.dismiss();
+            }
         } else {
-            if (getActivity() != null) {
+            if (!Home.snack.isShown()&&getActivity() != null) {
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
-                Snackbar snack = Snackbar.make(getView(), "No Internet Connection", Snackbar.LENGTH_SHORT)
+              Home.snack = Snackbar.make(getView(), "No Internet Connection", Snackbar.LENGTH_SHORT)
                         .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -198,10 +202,10 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
                             }
                         })
                         .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.accent));
-                View view = snack.getView();
+                View view = Home.snack.getView();
                 TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
                 tv.setTextColor(Color.WHITE);
-                snack.show();
+                Home.snack.show();
             }
         }
 
@@ -212,12 +216,15 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
         if (Utils.onlineStatus2(getActivity())) {
             MIN = MIN + 10;
             new GetMoreData().execute();
+            if (Home.snack.isShown()) {
+               Home.snack.dismiss();
+            }
         } else {
-            if (getActivity() != null) {
+            if (!Home.snack.isShown()&&getActivity() != null) {
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
-                Snackbar snack = Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT)
+                 Home.snack = Snackbar.make(mroot, "No Internet Connection", Snackbar.LENGTH_SHORT)
                         .setAction(getString(R.string.text_tryAgain), new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -226,10 +233,12 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
                             }
                         })
                         .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.accent));
-                View view = snack.getView();
+
+                View view = Home.snack.getView();
                 TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
                 tv.setTextColor(Color.WHITE);
-                snack.show();
+                Home.snack.setDuration(Snackbar.LENGTH_INDEFINITE);
+                Home.snack.show();
             }
         }
 

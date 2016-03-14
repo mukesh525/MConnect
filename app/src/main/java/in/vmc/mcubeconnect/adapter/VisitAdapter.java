@@ -223,7 +223,7 @@ public class VisitAdapter extends RecyclerView.Adapter<VisitAdapter.FollowViewHo
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                holder.Logo.setImageResource(R.drawable.ic_errorr);
+                holder.Logo.setImageResource(R.drawable.notavailable);
             }
         });
     }
