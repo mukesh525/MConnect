@@ -1,9 +1,9 @@
 package in.vmc.mcubeconnect.activity;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-
 
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
@@ -13,12 +13,15 @@ import org.altbeacon.beacon.startup.BootstrapNotifier;
 import org.altbeacon.beacon.startup.RegionBootstrap;
 
 import in.vmc.mcubeconnect.backgroundservice.BeaconsMonitoringService;
+import in.vmc.mcubeconnect.databse.MDatabase;
 
 /**
  * Created by mukesh on 10/11/15.
  */
 public class MyApplication extends Application implements BootstrapNotifier {
     private static final String TAG = "Beacon";
+    private static MyApplication sInstance;
+    private static MDatabase mDatabase;
     private RegionBootstrap regionBootstrap;
     private BackgroundPowerSaver backgroundPowerSaver;
     private BeaconManager beaconManager;
@@ -28,6 +31,7 @@ public class MyApplication extends Application implements BootstrapNotifier {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "App started up");
+        sInstance = this;
         backgroundPowerSaver = new BackgroundPowerSaver(this);
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.getBeaconParsers().add(new BeaconParser().
@@ -61,5 +65,20 @@ public class MyApplication extends Application implements BootstrapNotifier {
             beaconManager = BeaconManager.getInstanceForApplication(this);
         }
         return beaconManager;
+    }
+
+    public static MyApplication getInstance() {
+        return sInstance;
+    }
+
+    public static Context getAplicationContext() {
+        return sInstance.getApplicationContext();
+    }
+
+    public synchronized static MDatabase getWritableDatabase() {
+        if (mDatabase == null) {
+            mDatabase = new MDatabase(getAplicationContext());
+        }
+        return mDatabase;
     }
 }
