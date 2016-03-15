@@ -480,8 +480,6 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
                 VisitData = data;
                 MyApplication.getWritableDatabase().insertAllSites(0, data, false);
                 adapter.setData(data);
-//                adapter = new VisitAdapter(getActivity(), VisitData, mroot, FragmentAll.this);
-//                recyclerView.setAdapter(adapter);
             }
 
 

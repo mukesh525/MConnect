@@ -242,7 +242,6 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
                 R.string.drawer_close);
         mDrawerLayout.setDrawerListener(drawerToggle);
         drawerToggle.syncState();
-
         View header = mDrawer.getHeaderView(0);
         tvname = (TextView) header.findViewById(R.id.name);
         tvemail = (TextView) header.findViewById(R.id.email);
