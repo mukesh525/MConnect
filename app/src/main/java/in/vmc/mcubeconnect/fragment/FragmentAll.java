@@ -489,4 +489,5 @@ public class FragmentAll extends Fragment implements SwipeRefreshLayout.OnRefres
     }
 
 
+
 }

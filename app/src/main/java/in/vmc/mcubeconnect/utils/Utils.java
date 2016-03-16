@@ -1,5 +1,7 @@
 package in.vmc.mcubeconnect.utils;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.ActivityNotFoundException;
@@ -7,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -15,6 +18,7 @@ import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +42,8 @@ import in.vmc.mcubeconnect.activity.LoginActivity;
  * Created by mukesh on 6/7/15.
  */
 public class Utils implements TAG {
+
+
 
     public static ArrayList<String> sortArray(ArrayList<String> al) {
         Comparator<String> nameComparator = new Comparator<String>() {
@@ -281,11 +287,7 @@ public class Utils implements TAG {
         String empEmail = sharedPrefs.getString(EMAIL, "n");
 
 
-        if (authKey.equals("n") && empName.equals("n") && empEmail.equals("n")) {
-            return false;
-        } else {
-            return true;
-        }
+        return !(authKey.equals("n") && empName.equals("n") && empEmail.equals("n"));
 
     }
 
@@ -342,10 +344,26 @@ public class Utils implements TAG {
         return px / scaledDensity;
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     public static void makeAcall(String number, Activity mActivity) {
-        Intent callIntent = new Intent(Intent.ACTION_DIAL);
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse("tel:" + number));
         callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            // Should we show an explanation?
+            if (mActivity.shouldShowRequestPermissionRationale(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                // Explain to the user why we need to read the write to storage
+            }
+
+            mActivity.requestPermissions(new String[]{Manifest.permission.CALL_PHONE},
+                    MY_PERMISSIONS_CALL);
+
+            // MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE is an
+            // app-defined int constant
+            return;
+        }
         mActivity.startActivity(callIntent);
 
     }
@@ -374,4 +392,11 @@ public class Utils implements TAG {
         }
 
     }
+
+
+
+
+
+
+
 }

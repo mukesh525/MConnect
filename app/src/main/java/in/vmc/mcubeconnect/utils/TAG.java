@@ -4,6 +4,7 @@ package in.vmc.mcubeconnect.utils;
  * Created by mukesh on 3/12/15.
  */
 public interface TAG {
+     int MY_PERMISSIONS_CALL =0;
 
     String PHONE = "number";
     String AUTHKEY = "authkey";
