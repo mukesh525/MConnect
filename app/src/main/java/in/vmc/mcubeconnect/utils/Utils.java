@@ -45,8 +45,6 @@ import in.vmc.mcubeconnect.activity.LoginActivity;
  */
 public class Utils implements TAG {
 
-
-
     public static ArrayList<String> sortArray(ArrayList<String> al) {
         Comparator<String> nameComparator = new Comparator<String>() {
             @Override
@@ -346,38 +344,30 @@ public class Utils implements TAG {
         return px / scaledDensity;
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
     public static void makeAcall(String number, final Activity mActivity) {
         Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse("tel:" + number));
         callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
-            // Should we show an explanation?
-            if (!mActivity.shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS)) {
-                showMessageOKCancel(mActivity,"You need to allow access to Call to Perform this operation",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mActivity.requestPermissions(new String[]{Manifest.permission.CALL_PHONE},
-                                        MY_PERMISSIONS_CALL);
-                            }
-                        });
-                return;
-            }
-
-            mActivity.requestPermissions(new String[]{Manifest.permission.CALL_PHONE},
-                    MY_PERMISSIONS_CALL);
-
-            // MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE is an
-            // app-defined int constant
+            showMessageOKCancel("You need to allow access to Calls",
+                    new DialogInterface.OnClickListener() {
+                        @TargetApi(Build.VERSION_CODES.M)
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mActivity.requestPermissions(new String[]{Manifest.permission.WRITE_CONTACTS},
+                                    MY_PERMISSIONS_CALL);
+                        }
+                    }, mActivity);
             return;
+
         }
         mActivity.startActivity(callIntent);
 
     }
-    private static void showMessageOKCancel(Activity mActivity,String message, DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder( mActivity)
+
+    private static void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener, Context mActivity) {
+        new AlertDialog.Builder(mActivity)
                 .setMessage(message)
                 .setPositiveButton("OK", okListener)
                 .setNegativeButton("Cancel", null)
@@ -409,11 +399,4 @@ public class Utils implements TAG {
         }
 
     }
-
-
-
-
-
-
-
 }
