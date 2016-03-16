@@ -1526,7 +1526,7 @@ public class Home extends AppCompatActivity implements TAG, YouTubePlayer.OnInit
         switch (requestCode) {
             case MY_PERMISSIONS_CALL: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+                   // Toast.makeText(Home.this," Call permision Granted",Toast.LENGTH_SHORT).show();
                     // permission was granted, yay! do the
                     // calendar task you need to do.
 

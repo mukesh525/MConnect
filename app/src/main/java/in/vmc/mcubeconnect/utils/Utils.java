@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -19,6 +20,7 @@ import android.os.BatteryManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
@@ -345,16 +347,23 @@ public class Utils implements TAG {
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    public static void makeAcall(String number, Activity mActivity) {
+    public static void makeAcall(String number, final Activity mActivity) {
         Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse("tel:" + number));
         callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             // Should we show an explanation?
-            if (mActivity.shouldShowRequestPermissionRationale(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                // Explain to the user why we need to read the write to storage
+            if (!mActivity.shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS)) {
+                showMessageOKCancel(mActivity,"You need to allow access to Call to Perform this operation",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mActivity.requestPermissions(new String[]{Manifest.permission.CALL_PHONE},
+                                        MY_PERMISSIONS_CALL);
+                            }
+                        });
+                return;
             }
 
             mActivity.requestPermissions(new String[]{Manifest.permission.CALL_PHONE},
@@ -366,6 +375,14 @@ public class Utils implements TAG {
         }
         mActivity.startActivity(callIntent);
 
+    }
+    private static void showMessageOKCancel(Activity mActivity,String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder( mActivity)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
     }
 
     public static void sendSms(String number, Activity mActivity) {
